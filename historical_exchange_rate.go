@@ -16,7 +16,7 @@ import (
 )
 
 // HistoricalExchangeRate get rates data based on usa dollar from {beginYear} to {end}
-func HistoricalExchangeRate(beginYear, endYear int, country string) ([]*ExchangeRate, error) {
+func HistoricalExchangeRate(beginYear, endYear int, country string) ([]ExchangeRate, error) {
 	if endYear < beginYear {
 		return nil, errors.New("end year can not less than begin year")
 	}
@@ -38,7 +38,7 @@ func HistoricalExchangeRate(beginYear, endYear int, country string) ([]*Exchange
 		urls = append(urls, strings.Replace(from2000toPresent, "{country}", country, 1))
 	}
 
-	var exchangeRate []*ExchangeRate
+	var exchangeRate []ExchangeRate
 	for _, url := range urls {
 		dates, rates, err := historicalTable(url)
 		if err != nil {
@@ -52,7 +52,7 @@ func HistoricalExchangeRate(beginYear, endYear int, country string) ([]*Exchange
 				break
 			}
 
-			exchangeRate = append(exchangeRate, &ExchangeRate{
+			exchangeRate = append(exchangeRate, ExchangeRate{
 				Country:      country,
 				MonetaryUnit: MonetaryUnit[country],
 				Date:         dates[i],
@@ -63,7 +63,7 @@ func HistoricalExchangeRate(beginYear, endYear int, country string) ([]*Exchange
 	return exchangeRate, nil
 }
 
-// ConvertRateInHistoricalDay covert rate in historical day
+// ConvertRateInHistoricalDay covert money by rate in historical day from fromCountry to toCountry
 func ConvertRateInHistoricalDay(value float64, from string, to string, historyDay time.Time) (float64, error) {
 	fromRate := 1.0
 	if from != UnitedStates {
