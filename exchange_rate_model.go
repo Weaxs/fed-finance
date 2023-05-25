@@ -9,7 +9,8 @@ import "time"
 // Exchange Rates
 
 const (
-	FedDate = "02-Jan-06"
+	FedDate   = "02-Jan-06"
+	ChartDate = "2006-01-02"
 
 	// Historical Data (Beginning Jan. 4, 1971 to 1989)
 	// https://www.federalreserve.gov/releases/h10/hist/default1989.htm
