@@ -8,8 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"io"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -56,14 +54,14 @@ func HistoricalExchangeRate(beginYear, endYear int, country string) ([]ExchangeR
 				Country:      country,
 				MonetaryUnit: MonetaryUnit[country],
 				Date:         dates[i],
-				rate:         rates[i],
+				Value:        rates[i],
 			})
 		}
 	}
 	return exchangeRate, nil
 }
 
-// ConvertRateInHistoricalDay covert money by rate in historical day from fromCountry to toCountry
+// ConvertRateInHistoricalDay covert money by Value in historical day from fromCountry to toCountry
 func ConvertRateInHistoricalDay(value float64, from string, to string, historyDay time.Time) (float64, error) {
 	fromRate := 1.0
 	if from != UnitedStates {
@@ -73,10 +71,10 @@ func ConvertRateInHistoricalDay(value float64, from string, to string, historyDa
 		}
 		for _, rate := range fromRates {
 			if rate.Date.Equal(historyDay) {
-				fromRate = rate.rate
+				fromRate = rate.Value
 				break
 			} else if rate.Date.After(historyDay) {
-				return 0, fmt.Errorf("can not found contruny[%v] exchage rate in %v", from, historyDay)
+				return 0, fmt.Errorf("can not found contruny[%v] exchage Value in %v", from, historyDay)
 			}
 		}
 	}
@@ -89,10 +87,10 @@ func ConvertRateInHistoricalDay(value float64, from string, to string, historyDa
 		}
 		for _, rate := range toRates {
 			if rate.Date.Equal(historyDay) {
-				toRate = rate.rate
+				toRate = rate.Value
 				break
 			} else if rate.Date.After(historyDay) {
-				return 0, fmt.Errorf("can not found contruny[%v] exchage rate in %v", to, historyDay)
+				return 0, fmt.Errorf("can not found contruny[%v] exchage Value in %v", to, historyDay)
 			}
 		}
 	}
@@ -101,25 +99,9 @@ func ConvertRateInHistoricalDay(value float64, from string, to string, historyDa
 }
 
 func historicalTable(url string) (dates []time.Time, rates []float64, err error) {
-	response, err := http.Get(url)
+	doc, err := requestHtml(url)
 	if err != nil {
-		err = fmt.Errorf("request failed: %w", err)
-		return
-	}
-	defer func(Body io.ReadCloser) {
-		_ = Body.Close()
-	}(response.Body)
-
-	htmlBytes, err := io.ReadAll(response.Body)
-	if err != nil {
-		err = fmt.Errorf("read response body error: %w", err)
-		return
-	}
-
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(htmlBytes)))
-	if err != nil {
-		err = fmt.Errorf("parse body to html error: %w", err)
-		return
+		return nil, nil, err
 	}
 
 	table := doc.Find("table[summary]")

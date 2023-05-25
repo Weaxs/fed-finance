@@ -29,5 +29,5 @@ type ExchangeRate struct {
 	Country      string
 	MonetaryUnit string
 	Date         time.Time
-	rate         float64
+	Value        float64
 }
