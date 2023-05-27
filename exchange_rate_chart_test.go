@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestName(t *testing.T) {
+func TestExchangeRateLine(t *testing.T) {
 	f, _ := os.Create("chart/GE-UK_rates_82-87.html")
 
 	beginYear := 1982
