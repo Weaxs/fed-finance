@@ -1,7 +1,3 @@
-/*
- * Copyright(C) 2023 Weaxs
- */
-
 package fed_finance
 
 const (
