@@ -57,7 +57,7 @@ var (
 		EMU:           "Euro",
 		Finland:       "Markka",
 		France:        "Franc",
-		Germany:       "Deutsche Mark",
+		Germany:       "Mark",
 		Greece:        "Drachma",
 		HongKong:      "Dollar",
 		India:         "Rupee",
